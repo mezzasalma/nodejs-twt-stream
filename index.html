@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <script>
+            console.log("We are in le navigateur")
+            const socket = new WebSocket(`ws://${window.location.hostname}:${window.location.port}`);
+
+            socket.addEventListener("message", async function (event) {
+                let data = []
+                try {
+                    data = await event.data.text()
+                    console.log("message from server: ", data)
+                    socket.send(data)
+                } catch (err) {
+                    //
+                }
+            })
+
+            socket.addEventListener('open', function (event) {
+                console.log("connected", event)
+                socket.send("Hello from client")
+            });
+
+        </script>
+    </head>
+<body>
+    <h1>Hello</h1>
+
+</body>
+</html>

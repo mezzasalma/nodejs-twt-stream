@@ -1,0 +1,19 @@
+{
+  "name": "twt-streams",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Maeva Mezzasalma",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "needle": "^2.6.0",
+    "ws": "^7.4.2"
+  }
+}
