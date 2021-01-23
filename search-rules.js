@@ -8,32 +8,32 @@ const options = {
     }
 }
 
-function setSearchRules(rules) {
-    const opts = {
-        ...options,
-        path: TWT_API_RULES_PATH,
-        method: "POST",
-    }
-
-    const data = JSON.stringify({
-        add: rules
-    })
-
-    console.log("body data: ", data)
-
-    const req = http.request(opts, (res) => {
-        let data
-        res.on("data", (chunk) => {
-            data += chunk
-        })
-        res.on("end", () => {
-            console.log("twt api response: ", data)
-        })
-    })
-
-    req.write(data)
-    req.end()
-}
+// function setSearchRules(rules) {
+//     const opts = {
+//         ...options,
+//         path: TWT_API_RULES_PATH,
+//         method: "POST",
+//     }
+//
+//     const data = JSON.stringify({
+//         add: rules
+//     })
+//
+//     console.log("body data: ", data)
+//
+//     const req = http.request(opts, (res) => {
+//         let data
+//         res.on("data", (chunk) => {
+//             data += chunk
+//         })
+//         res.on("end", () => {
+//             console.log("twt api response: ", data)
+//         })
+//     })
+//
+//     req.write(data)
+//     req.end()
+// }
 
 async function getSearchRules() {
     const response = await needle('get', TWT_API_URL, options)

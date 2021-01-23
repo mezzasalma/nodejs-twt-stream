@@ -5,7 +5,7 @@ const WebSocket = require("ws")
 const server = require("./server")
 
 const {connectToTwitter, tweetStream} = require("./twitter")
-const {jsonParser, textExtractor} = require("./process-tweets")
+const {jsonParser, textExtractor, imageUrlExtractor} = require("./process-tweets")
 const {getSearchRules, deleteSearchRules, addSearchRules} = require('./search-rules')
 
 // server websocket https
@@ -18,8 +18,9 @@ wsServer.on("connection", (client) => {
 
     client.on("message", (message) => {
         console.log("message from client: ", message)
+        resetRules(message)
 
-        client.send("Hello from server")
+        client.send(message)
     })
 
     client.on("end", () => {
@@ -31,14 +32,15 @@ wsServer.on("connection", (client) => {
     const socketStream = WebSocket.createWebSocketStream(client);
     pipeline(
         tweetStream,
-        // jsonParser,
+        jsonParser,
         // textExtractor,
+        imageUrlExtractor,
         socketStream,
         (err) => {
             if (err) {
                 console.error("pipeline error: ", err)
             } else {
-                console.log("pipeline success")
+                //
             }
         }
     )
@@ -48,7 +50,7 @@ wsServer.on("connection", (client) => {
 connectToTwitter()
 
 // reset rules : get / delete / add
-async function resetRules() {
+async function resetRules(keyword = "ghibli") {
     // get rules
     const existingRules = await getSearchRules()
     const ids = existingRules?.data?.map( rule => rule.id )
@@ -60,9 +62,6 @@ async function resetRules() {
 
     // add rules
     await addSearchRules([
-        {value: "ghibli has:images", tag: "ghibli"},
-        {value: "cat has:images", tag: "cat"}
+        {value: `${keyword} has:images`, tag: `${keyword}`},
     ])
 }
-
-resetRules()

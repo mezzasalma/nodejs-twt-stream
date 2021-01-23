@@ -25,6 +25,22 @@ const textExtractor = new Transform({
     }
 })
 
+const imageUrlExtractor = new Transform({
+    writableObjectMode: true,
+
+    transform(chunk, _, callback) {
+        try {
+            chunk?.includes.media?.map( media => {
+                this.push(media.url + "")
+            })
+        } catch (error) {
+            //
+        }
+        // this.push(JSON.stringify(chunk))
+        callback()
+    }
+})
+
 const tweetCounter = new Transform({
     transform(chunk, _, callback) {
         this.counter++
@@ -51,4 +67,5 @@ const logger = new Writable({
 module.exports = {
     jsonParser,
     textExtractor,
+    imageUrlExtractor
 }

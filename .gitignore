@@ -1,5 +1,4 @@
 node_modules/
 .idea/
 .env
-http_no_stream.js
-.env
+style.css
