@@ -1,15 +1,37 @@
-const { Writable, Transform } = require("stream")
+const { Writable, Readable, Transform } = require("stream")
+
+function getTweetFromSource(broadcaster) {
+    // create a new source stream for each client
+    const tweetSource = new Readable({
+        objectMode: true,
+        read() { }
+    })
+
+    // data event callback
+    function pushToSource(chunk) {
+        tweetSource.push(chunk)
+    }
+
+    // listen to new data from main pipeline and push it to client stream
+    broadcaster.on("data", pushToSource)
+
+    // remove event listener if error, emitted from client pipeline
+    tweetSource.on("error", () => {
+        broadcaster.off("data", pushToSource)
+    })
+
+    return tweetSource
+}
 
 const jsonParser = new Transform({
     readableObjectMode: true, // objet en lecture pour les autres
-
     transform(chunk, _, callback) {
         let data = {}
         try {
             data = JSON.parse(chunk)
             this.push(data)
         } catch (error) {
-            //
+            // console.error(error)
         }
         callback()
     }
@@ -26,6 +48,7 @@ const textExtractor = new Transform({
 })
 
 const imageUrlExtractor = new Transform({
+    readableObjectMode: true,
     writableObjectMode: true,
 
     transform(chunk, _, callback) {
@@ -41,12 +64,20 @@ const imageUrlExtractor = new Transform({
     }
 })
 
+const createGif = new Transform({
+    transform(chunk, _, callback) {
+        this.push(chunk)
+        callback()
+    }
+})
+
 const tweetCounter = new Transform({
+    objectMode: true,
     transform(chunk, _, callback) {
         this.counter++
-
-        this.push(this.counter.toString())
-
+        console.log(this.counter)
+        // this.push(this.counter.toString())
+        this.push(chunk)
         callback()
     }
 })
@@ -65,7 +96,9 @@ const logger = new Writable({
 })
 
 module.exports = {
+    getTweetFromSource,
     jsonParser,
+    tweetCounter,
     textExtractor,
-    imageUrlExtractor
+    imageUrlExtractor,
 }
