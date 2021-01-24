@@ -64,24 +64,26 @@ const imageUrlExtractor = new Transform({
     }
 })
 
-const createGif = new Transform({
-    transform(chunk, _, callback) {
-        this.push(chunk)
-        callback()
-    }
-})
-
 const tweetCounter = new Transform({
     objectMode: true,
     transform(chunk, _, callback) {
         this.counter++
-        console.log(this.counter)
+        let tag = chunk.matching_rules[0].tag
+        if (!this.tagsArray.hasOwnProperty(tag)) {
+            this.tagsArray[tag] = 1
+        }
+        if (this.tagsArray.hasOwnProperty(tag)) {
+            this.tagsArray[tag]++
+        }
         // this.push(this.counter.toString())
+        console.log(this.tagsArray, "Total des tweets récupérés contenant des images " + this.counter)
         this.push(chunk)
         callback()
     }
+
 })
 tweetCounter.counter = 0
+tweetCounter.tagsArray = []
 
 const logger = new Writable({
     objectMode: true,

@@ -27,7 +27,6 @@ wsServer.on("connection", (client) => {
         let keywords = message.split(',')
         resetRules(keywords)
 
-        client.send(keywords)
     })
 
     // client.on("end", () => {
@@ -42,9 +41,8 @@ wsServer.on("connection", (client) => {
     const socketStream = WebSocket.createWebSocketStream(client);
     pipeline(
         tweetSource,
-        jsonParser,
+        // jsonParser, // déjà parser dans main pipeline
         imageUrlExtractor,
-        // tweetCounter,
         socketStream,
         (err) => {
             if (err) {
@@ -55,6 +53,7 @@ wsServer.on("connection", (client) => {
         }
     )
     socketStream.on("close", () => {
+        // console.log(tweetCounter.counter);
         socketStream.destroy() // destroy socketStream to terminate client pipeline
     })
 })
@@ -65,7 +64,8 @@ connectToTwitter()
 // main pipeline, ending with broadcaster passthrough stream
 pipeline(
   tweetStream,
-  // jsonParser,
+  jsonParser,
+  tweetCounter,
   // add here what transform you want for ALL clients
   // remember to set objectMode when needed
   broadcaster,
