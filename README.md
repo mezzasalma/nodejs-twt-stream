@@ -1,8 +1,8 @@
 # Workshop NodeJS & Twitter API
 ###Maëva Mezzasalma BDDI 3 - Gobelins
 
-Application NodeJS qui permet de voir les images postées en temps réel sur Twitter sur un mots-clé.
-L'application demande à l'utilisateur de renseigner un mot-clé ou plusieurs mots-clés (par défaut filtrer sur Ghibli).
+Application NodeJS qui permet de voir les images postées en temps réel sur Twitter sur un mot-clé.
+L'application demande à l'utilisateur de renseigner un mot-clé ou plusieurs mots-clés (par défaut keyword = Ghibli).
 
 Pour l'instant, on peut récupérer dans la console côté serveur un tableau associatif du nombre d'images obtenu pour chaque mot-clés et le total des tweets récupérés contenant des images.
 
